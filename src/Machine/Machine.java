@@ -23,6 +23,7 @@ public class Machine {
         try {
 
             Socket s = new Socket(ac_address, ac_port);
+            
 
             ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
             ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
@@ -128,6 +129,7 @@ public class Machine {
                                 	Packet ack = new Packet(0);
                                 	ack.msg_name = "ack";
                                 	ack.pkt_id = receiveBuffer.size();
+                                	ack.cert_id = certID;
                                 	oos.writeObject(ack);
                                 	System.out.println("Ack sent!");
                                 }
@@ -136,6 +138,7 @@ public class Machine {
                                 	Packet ack = new Packet(0);
                                 	ack.msg_name = "ack";
                                 	ack.pkt_id = receiveBuffer.size();
+                                	ack.cert_id = certID;
                                 	oos.writeObject(ack);
                                 	
                                     System.out.printf("Received %d packets from %s\n", totalPkts, p.client_ip);
@@ -274,13 +277,13 @@ public class Machine {
 	                    System.out.printf(cur);
 	                    
 	                    if (j+1%windowSize == 0) {
-	                		s.setSoTimeout(10000);
-	                		try {
-	                			Packet ack = (Packet) ois.readObject();
-	                			System.out.println("Ack recieved!");
-	                			
-	                		} catch (SocketTimeoutException e) {
-	                			j = j-windowSize;
+	                    	s.setSoTimeout(5000);
+	                		Packet ack = (Packet) ois.readObject();
+	                		s.setSoTimeout(Integer.MAX_VALUE);
+	                		if (ack != null) System.out.println("Ack recieved!");
+	                		else {
+	                			System.out.printf("Resending previous window\n");
+	                			j -= windowSize;
 	                		}
 	                		
 	                	}
