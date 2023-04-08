@@ -62,6 +62,7 @@ public class Machine {
 
             System.out.printf("1.Get file\n2.Idle state\n\n>>");
             int x = sc.nextInt();
+            
 
             if (x == 1) {
                 Packet first = new Packet(0);
@@ -128,6 +129,7 @@ public class Machine {
                                 	ack.msg_name = "ack";
                                 	ack.pkt_id = receiveBuffer.size();
                                 	oos.writeObject(ack);
+                                	System.out.println("Ack sent!");
                                 }
 
                                 if (p.pkt_id == totalPkts) {
@@ -251,18 +253,9 @@ public class Machine {
                     buffer.add(pkt);
                 }
                 
-                for (int j=1; j<=buffer.size(); j++) {
+                for (int j=0; j<buffer.size(); j++) {
                 	try {
-	                	if (j%windowSize == 0) {
-	                		s.setSoTimeout(2000);
-	                		try {
-	                			Packet ack = (Packet) ois.readObject();
-	                			
-	                		} catch (SocketTimeoutException e) {
-	                			j = j-windowSize;
-	                		}
-	                		
-	                	}
+	                	
 	                	Packet p = buffer.get(j);
 	                	oos.writeObject(p);
 	                	
@@ -279,6 +272,19 @@ public class Machine {
 	                    }
 	                    cur += "|" + p.pkt_id + "/" + pkt_total + "\r";
 	                    System.out.printf(cur);
+	                    
+	                    if (j+1%windowSize == 0) {
+	                		s.setSoTimeout(10000);
+	                		try {
+	                			Packet ack = (Packet) ois.readObject();
+	                			System.out.println("Ack recieved!");
+	                			
+	                		} catch (SocketTimeoutException e) {
+	                			j = j-windowSize;
+	                		}
+	                		
+	                	}
+	                    
 	                    if (p.pkt_id == pkt_total) {
 	                        System.out.printf("Sent %d packets to %s\n", pkt_total, p.destination_ip);
 	                        break;
