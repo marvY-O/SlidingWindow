@@ -133,16 +133,18 @@ public class Machine {
                                 	ack.msg_name = "ack";
                                 	ack.pkt_id = receiveBuffer.size();
                                 	ack.cert_id = certID;
+                                	ack.destination_ip = destIP;
                                     ack.client_ip = clientIP;
                                 	oos.writeObject(ack);
                                 	System.out.println("Ack sent!");
                                 }
 
-                                if (p.pkt_id == totalPkts) {
+                                else if (p.pkt_id == totalPkts) {
                                 	Packet ack = new Packet(0);
                                 	ack.msg_name = "ack";
                                 	ack.pkt_id = receiveBuffer.size();
                                 	ack.cert_id = certID;
+                                	ack.client_ip = clientIP;
                                 	ack.destination_ip = destIP;
                                 	oos.writeObject(ack);
                                 	
