@@ -21,14 +21,12 @@ public class Machine {
     public void initiate() throws IOException {
         Scanner sc = new Scanner(System.in);
         try {
-
+        	
             Socket s = new Socket(ac_address, ac_port);
             
-
             ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
             ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
             System.out.printf("Connected to server %s:%d\n", ac_address, ac_port);
-
 
             String certID;
             SecurityCertificate cert = new SecurityCertificate();
@@ -41,7 +39,6 @@ public class Machine {
 
             oos.writeObject(cert);
 
-            //SecurityCertificate cert;
             while (true) {
                 try {
                     cert = (SecurityCertificate) ois.readObject();
@@ -139,6 +136,7 @@ public class Machine {
                                 	ack.msg_name = "ack";
                                 	ack.pkt_id = receiveBuffer.size();
                                 	ack.cert_id = certID;
+                                	ack.destination_ip = destIP;
                                 	oos.writeObject(ack);
                                 	
                                     System.out.printf("Received %d packets from %s\n", totalPkts, p.client_ip);
@@ -146,7 +144,6 @@ public class Machine {
                                 }
                             }
                         }
-
 
                     } catch (ClassNotFoundException e) {
                         System.out.printf("Error reading packets (Undefined Format): ");
@@ -276,16 +273,20 @@ public class Machine {
 	                    cur += "|" + p.pkt_id + "/" + pkt_total + "\r";
 	                    System.out.printf(cur);
 	                    
-	                    if (j+1%windowSize == 0) {
-	                    	System.out.printf("Waiting for ack");
-	                    	s.setSoTimeout(5000);
-	                		Packet ack = (Packet) ois.readObject();
-	                		s.setSoTimeout(Integer.MAX_VALUE);
-	                		if (ack != null) System.out.println("Ack recieved!");
-	                		else {
+	                    if ((j+1)%windowSize == 0) {
+	                    	try {
+		                    	System.out.printf("Waiting for ack");
+		                    	s.setSoTimeout(10000);
+		                		Packet ack = (Packet) ois.readObject();
+	                    	}
+	                		catch(SocketException e) {
+	                			s.setSoTimeout(Integer.MAX_VALUE);
 	                			System.out.printf("Resending previous window\n");
 	                			j -= windowSize;
 	                		}
+	                    	finally {
+	                    		s.setSoTimeout(Integer.MAX_VALUE);
+	                    	}
 	                		
 	                	}
 	                    
