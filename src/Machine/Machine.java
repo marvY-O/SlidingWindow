@@ -118,8 +118,8 @@ public class Machine {
                                     }
                                 }
                                 cur += "|" + p.pkt_id + "/" + totalPkts + "\r";
-                                System.out.printf(cur);
-                                
+//                                System.out.printf(cur);
+                        		System.out.printf("%d recieved\n", p.pkt_id);
                                 receiveBuffer.add(p);
                                 
                                 if (receiveBuffer.size() % windowSize == 0) {
@@ -127,6 +127,7 @@ public class Machine {
                                 	ack.msg_name = "ack";
                                 	ack.pkt_id = receiveBuffer.size();
                                 	ack.cert_id = certID;
+                                    ack.client_ip = clientIP;
                                 	oos.writeObject(ack);
                                 	System.out.println("Ack sent!");
                                 }
@@ -271,13 +272,15 @@ public class Machine {
 	                        }
 	                    }
 	                    cur += "|" + p.pkt_id + "/" + pkt_total + "\r";
-	                    System.out.printf(cur);
-	                    
+//	                    System.out.printf(cur);
+	                    System.out.printf("%d sent\n", j);
 	                    if ((j+1)%windowSize == 0) {
 	                    	try {
 		                    	System.out.printf("Waiting for ack");
-		                    	s.setSoTimeout(10000);
-		                		Packet ack = (Packet) ois.readObject();
+		                    	s.setSoTimeout(5000);
+	                    		Packet ack = (Packet) ois.readObject();
+	                    		System.out.println("\nAck Recieved!");
+	                    		
 	                    	}
 	                		catch(SocketException e) {
 	                			s.setSoTimeout(Integer.MAX_VALUE);
