@@ -32,11 +32,13 @@ public class Machine {
             SecurityCertificate cert = new SecurityCertificate();
 
             System.out.printf("Enter username: ");
-            cert.username = sc.next();
+//            cert.username = sc.next();
+            cert.username = "marvy";
 
             System.out.printf("Enter password: ");
-            cert.password = sc.next();
-
+//            cert.password = sc.next();
+            cert.password = "admin";
+            
             oos.writeObject(cert);
 
             while (true) {
@@ -68,13 +70,17 @@ public class Machine {
                 int windowSize = 0;
 
                 System.out.printf("Name file to fetch: ");
-                path = sc.next();
+//                path = sc.next();
+                path = "file.txt";
 
                 System.out.printf("IP of Destination: ");
-                destIP = sc.next();
+//                destIP = sc.next();
+                destIP = "192.168.1.4";
                 
                 System.out.printf("Window Size: ");
-                windowSize = sc.nextInt();
+//                windowSize = sc.nextInt();
+                windowSize = 20;
+                
 
                 first.cert_id = certID;
                 first.client_ip = clientIP;
@@ -273,7 +279,7 @@ public class Machine {
 	                    }
 	                    cur += "|" + p.pkt_id + "/" + pkt_total + "\r";
 //	                    System.out.printf(cur);
-	                    System.out.printf("%d sent\n", j);
+	                    System.out.printf("%d sent\n", p.pkt_id);
 	                    if ((j+1)%windowSize == 0) {
 	                    	try {
 		                    	System.out.printf("Waiting for ack");
