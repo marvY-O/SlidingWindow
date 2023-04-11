@@ -222,7 +222,7 @@ public class Machine {
                     return;
                 }
 
-                int pyld_size = 1000;
+                int pyld_size = 7;
                 final int pkt_total = file.length / pyld_size + (file.length % pyld_size == 0 ? 0 : 1);
 
                 System.out.printf("\nMessage Size: %d Payload Size: %d Total Packets: %d\n\n", file.length, pyld_size, pkt_total);
@@ -277,6 +277,7 @@ public class Machine {
 	                    System.out.printf(cur);
 	                    
 	                    if (j+1%windowSize == 0) {
+	                    	System.out.printf("Waiting for ack");
 	                    	s.setSoTimeout(5000);
 	                		Packet ack = (Packet) ois.readObject();
 	                		s.setSoTimeout(Integer.MAX_VALUE);
