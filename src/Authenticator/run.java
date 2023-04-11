@@ -6,7 +6,7 @@ import java.util.*;
 public class run {
     public static void main(String args[]) throws IOException{
         int ac_port = 5000;
-        String serverIP = "127.0.0.1";
+        String serverIP = "192.168.1.21";
 
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();

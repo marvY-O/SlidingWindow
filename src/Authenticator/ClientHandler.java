@@ -73,6 +73,7 @@ class ClientHandler implements Runnable {
                 			Packet p;
 							try {
 								p = (Packet) ois.readObject();
+								p.client_ip = s.getInetAddress().getHostAddress();
 								//if (p.destination_ip == InetAddress.getLocalHost().getHostAddress());
 								if (p.pkt_id == -1){
 									System.out.printf("%s sending file to %s\n", p.client_ip, p.destination_ip);

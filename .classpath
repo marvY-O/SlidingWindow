@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/marvy/Desktop/CNS/problem 3/ProxyServer6/sqlite-jdbc-3.41.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/marvy/Desktop/CNS/problem 3/ProxyServerSlidingWindow8/lib/sqlite-jdbc-3.41.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
