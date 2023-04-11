@@ -8,14 +8,14 @@ public class Machine {
     String ac_address, clientIP;
     int ac_port;
     Vector < Packet > buffer;
-    Queue < Packet > receiveBuffer;
+    Vector < Packet > receiveBuffer;
 
     public Machine(String ac_address, int ac_port, String clientIP) throws IOException {
         this.ac_address = ac_address;
         this.clientIP = clientIP;
         this.ac_port = ac_port;
         this.buffer = new Vector < Packet > ();
-        this.receiveBuffer = new LinkedList < Packet > ();
+        this.receiveBuffer = new Vector < Packet > ();
     }
 
     public void initiate() throws IOException {
@@ -128,26 +128,31 @@ public class Machine {
                         		System.out.printf("%d recieved\n", p.pkt_id);
                                 receiveBuffer.add(p);
                                 
-                                if (receiveBuffer.size() % windowSize == 0) {
-                                	Packet ack = new Packet(0);
-                                	ack.msg_name = "ack";
-                                	ack.pkt_id = receiveBuffer.size();
-                                	ack.cert_id = certID;
-                                	ack.destination_ip = destIP;
-                                    ack.client_ip = clientIP;
-                                	oos.writeObject(ack);
-                                	System.out.println("Ack sent!");
+                                if (receiveBuffer.size() % windowSize == 0 || p.pkt_id == totalPkts) {
+                                	Random random = new Random();
+                                	int rand = random.nextInt()%2;
+                                	if (rand == 0) {
+	                                	Packet ack = new Packet(0);
+	                                	ack.msg_name = "ack";
+	                                	ack.pkt_id = receiveBuffer.size();
+	                                	ack.cert_id = certID;
+	                                	ack.destination_ip = destIP;
+	                                    ack.client_ip = clientIP;
+	                                	oos.writeObject(ack);
+	                                	System.out.println("Ack sent!");
+                                	}
+                                	else {
+                                		System.out.println("Ack not sent, waiting for prev window again.");
+                                		for (int i=receiveBuffer.size()-1; i>=0; i--) {
+                                			if (receiveBuffer.get(i).pkt_id % windowSize != 0) {
+                                				receiveBuffer.remove(i);
+                                			}
+                                			else break;
+                                		}
+                                	}
                                 }
 
-                                else if (p.pkt_id == totalPkts) {
-                                	Packet ack = new Packet(0);
-                                	ack.msg_name = "ack";
-                                	ack.pkt_id = receiveBuffer.size();
-                                	ack.cert_id = certID;
-                                	ack.client_ip = clientIP;
-                                	ack.destination_ip = destIP;
-                                	oos.writeObject(ack);
-                                	
+                                if (p.pkt_id == totalPkts) {
                                     System.out.printf("Received %d packets from %s\n", totalPkts, p.client_ip);
                                     break;
                                 }
@@ -180,14 +185,15 @@ public class Machine {
                     }
                 }
 
-                final String outputPath = receiveBuffer.peek().msg_name;
+                final String outputPath = receiveBuffer.get(0).msg_name;
 
-                System.out.printf("Received " + outputPath + " from " + receiveBuffer.peek().client_ip + "\n");
+                System.out.printf("Received " + outputPath + " from " + receiveBuffer.get(0).client_ip + "\n");
 
                 byte[] byteFile = new byte[byteLength];
-                int i = 0;
-                while (!receiveBuffer.isEmpty()) {
-                    Packet pkt = receiveBuffer.poll();
+                
+                int i=0;
+                for (Packet pkt: receiveBuffer) {
+//                    Packet pkt = receiveBuffer.get(i);
                     for (int j = 0; j < pkt.payload.length && i < byteLength; j++) {
                         byteFile[i++] = pkt.payload[j];
                     }
