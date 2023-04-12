@@ -6,7 +6,7 @@ import java.util.*;
 public class run {
     public static void main (String args[]) throws IOException{
     	
-    	String clientIP = "127.0.0.1";
+    	String clientIP = "192.168.1.21";
         
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -26,6 +26,7 @@ public class run {
             System.out.println("Error getting network interfaces: " + e.getMessage());
         }
         
+        System.out.println(clientIP);
     	Scanner sc = new Scanner(System.in);
     	System.out.printf("Enter IP Address of the server: ");
 //    	String ac_address = sc.next();

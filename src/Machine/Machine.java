@@ -59,7 +59,7 @@ public class Machine {
             }
 
             certID = cert.CertificateID;
-            System.out.printf("Security ID: %sn\n", certID);
+            System.out.printf("Security ID: %s\n", certID);
 
             System.out.printf("1.Get file\n2.Idle state\n\n>>");
             int x = sc.nextInt();
@@ -269,6 +269,7 @@ public class Machine {
                 	try {
 	                	
 	                	Packet p = buffer.get(j);
+	                	p.cert_id = certID;
 	                	oos.writeObject(p);
 	                	
 	                	int cnt = Math.round(p.pkt_id * 20 / pkt_total);
