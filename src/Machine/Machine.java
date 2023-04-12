@@ -262,6 +262,7 @@ public class Machine {
 
                     buffer.add(pkt);
                 }
+                int base = 0;
                 
                 for (int j=0; j<buffer.size(); j++) {
                 	try {
@@ -288,13 +289,14 @@ public class Machine {
 		                    	System.out.printf("Waiting for ack");
 		                    	s.setSoTimeout(5000);
 	                    		Packet ack = (Packet) ois.readObject();
+	                    		base = ack.pkt_id;
 	                    		System.out.println("\nAck Recieved!");
 	                    		
 	                    	}
 	                		catch(SocketTimeoutException e) {
 	                			s.setSoTimeout(Integer.MAX_VALUE);
 	                			System.out.printf("Resending previous window\n");
-	                			j -= windowSize;
+	                			j = base;
 	                		}
 	                    	finally {
 	                    		s.setSoTimeout(Integer.MAX_VALUE);
