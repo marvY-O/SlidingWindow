@@ -103,7 +103,7 @@ public class Machine {
                 byteLength = firstReply.pkt_no;
                 System.out.println("Ready to receive " + totalPkts + " from " + firstReply.client_ip);
                 receiveBuffer.setSize(totalPkts);
-
+                int received = 0;
                 while (true) {
                     try {
                         p = (Packet) ois.readObject();
@@ -134,12 +134,13 @@ public class Machine {
                                 	if (rand == 0) {
 	                                	Packet ack = new Packet(0);
 	                                	ack.msg_name = "ack";
-	                                	ack.pkt_id = receiveBuffer.size();
+	                                	ack.pkt_id = received + windowSize;
 	                                	ack.cert_id = certID;
 	                                	ack.destination_ip = destIP;
 	                                    ack.client_ip = clientIP;
 	                                	oos.writeObject(ack);
 	                                	System.out.println("Ack sent!");
+	                                	received += windowSize;
                                 	}
                                 	else {
                                 		System.out.println("Ack not sent, waiting for prev window again.");
