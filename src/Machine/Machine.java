@@ -125,7 +125,7 @@ public class Machine {
                                     }
                                 }
                                 cur += "|" + p.pkt_id + "/" + totalPkts + "\r";
-                        		System.out.printf("%d recieved\n", p.pkt_id);
+//                        		System.out.printf("%d recieved\n", p.pkt_id);
                                 receiveBuffer.setElementAt(p,p.pkt_id - 1);
                                 
                                 if (p.pkt_id % windowSize == 0 || p.pkt_id == totalPkts) {
@@ -139,6 +139,7 @@ public class Machine {
 	                                	ack.destination_ip = destIP;
 	                                    ack.client_ip = clientIP;
 	                                	oos.writeObject(ack);
+	                                	System.out.printf("Recieved %d packets\n", received+windowSize);
 	                                	System.out.println("Ack sent!");
 	                                	received += windowSize;
                                 	}
@@ -269,8 +270,8 @@ public class Machine {
                 	try {
 	                	
 	                	Packet p = buffer.get(j);
-	                	System.out.printf("ID: %d, Client: %s, Destination: %s, certID: %s = ", p.pkt_id, p.client_ip, p.destination_ip, p.cert_id);
-						
+//	                	System.out.printf("ID: %d, Client: %s, Destination: %s, certID: %s = ", p.pkt_id, p.client_ip, p.destination_ip, p.cert_id);
+//						
 	                	oos.writeObject(p);
 	                	
 	                	int cnt = Math.round(p.pkt_id * 20 / pkt_total);
@@ -286,11 +287,11 @@ public class Machine {
 	                    }
 	                    cur += "|" + p.pkt_id + "/" + pkt_total + "\r";
 //	                    System.out.printf(cur);
-	                    System.out.printf("%d sent\n", p.pkt_id);
+//	                    System.out.printf("%d sent\n", p.pkt_id);
 	                    j++;
 	                    if ((j)%windowSize == 0) {
 	                    	try {
-		                    	System.out.printf("Waiting for ack");
+		                    	System.out.printf("Waiting for ack..\n");
 		                    	s.setSoTimeout(5000);
 	                    		Packet ack = (Packet) ois.readObject();
 	                    		base = ack.pkt_id;

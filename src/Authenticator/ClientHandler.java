@@ -84,13 +84,13 @@ class ClientHandler implements Runnable {
 								}
 								InetAddress destAddr = InetAddress.getByName(p.destination_ip);
 								
-								System.out.printf("ID: %d, Client: %s, Destination: %s, certID: %s = ", p.pkt_id, p.client_ip, p.destination_ip, p.cert_id);
-								System.out.printf("%s\n", certIDStore.get(s.getInetAddress()));
-								if (!p.cert_id.equals(certIDStore.get(s.getInetAddress()))){
-									
-									System.out.println("FALSE SECURITY CERTIFICATE ID!!");
-									continue;
-								}
+//								System.out.printf("ID: %d, Client: %s, Destination: %s, certID: %s = ", p.pkt_id, p.client_ip, p.destination_ip, p.cert_id);
+//								System.out.printf("%s\n", certIDStore.get(s.getInetAddress()));
+//								if (!p.cert_id.equals(certIDStore.get(s.getInetAddress()))){
+//									
+//									System.out.println("FALSE SECURITY CERTIFICATE ID!!");
+//									continue;
+//								}
 								
 								synchronized (buffer) {
 									if (buffer.containsKey(destAddr)) {
