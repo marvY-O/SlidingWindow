@@ -33,12 +33,12 @@ public class Machine {
             SecurityCertificate cert = new SecurityCertificate();
 
             System.out.printf("Enter username: ");
-//            cert.username = sc.next();
-            cert.username = "marvy";
+            cert.username = sc.next();
+//            cert.username = "marvy";
 
             System.out.printf("Enter password: ");
-//            cert.password = sc.next();
-            cert.password = "admin";
+            cert.password = sc.next();
+//            cert.password = "admin";
             
             oos.writeObject(cert);
 
@@ -71,16 +71,16 @@ public class Machine {
                 int windowSize = 0;
 
                 System.out.printf("Name file to fetch: ");
-//                path = sc.next();
-                path = "file.txt";
+                path = sc.next();
+//                path = "file.txt";
 
                 System.out.printf("IP of Destination: ");
-//                destIP = sc.next();
-                destIP = "192.168.1.4";
+                destIP = sc.next();
+//                destIP = "192.168.1.4";
                 
                 System.out.printf("Window Size: ");
-//                windowSize = sc.nextInt();
-                windowSize = 20;
+                windowSize = sc.nextInt();
+//                windowSize = 100;
                 
 
                 first.cert_id = certID;
@@ -140,7 +140,7 @@ public class Machine {
 	                                    ack.client_ip = clientIP;
 	                                	oos.writeObject(ack);
 	                                	System.out.printf("\nRecieved %d packets\n", received+windowSize);
-	                                	System.out.println("Ack sent!");
+	                                	System.out.println("Ack sent!\n");
 	                                	received += windowSize;
                                 	}
                                 	else {
@@ -295,7 +295,7 @@ public class Machine {
 		                    	s.setSoTimeout(5000);
 	                    		Packet ack = (Packet) ois.readObject();
 	                    		base = ack.pkt_id;
-	                    		System.out.println("\nAck Recieved!");
+	                    		System.out.println("Ack Recieved!\n");
 	                    		
 	                    	}
 	                		catch(SocketTimeoutException e) {
