@@ -83,12 +83,15 @@ class ClientHandler implements Runnable {
 									System.out.printf("Fetch request of %s from %s to %s\n", p.msg_name, p.client_ip, p.destination_ip);
 								}
 								InetAddress destAddr = InetAddress.getByName(p.destination_ip);
+								
+								System.out.printf("ID: %d, Client: %s, Destination: %s, certID: %s = ", p.pkt_id, p.client_ip, p.destination_ip, p.cert_id);
+								System.out.printf("%s\n", certIDStore.get(s.getInetAddress()));
 								if (!p.cert_id.equals(certIDStore.get(s.getInetAddress()))){
-									System.out.printf("%s, %s\n", p.cert_id, certIDStore.get(s.getInetAddress()));
+									
 									System.out.println("FALSE SECURITY CERTIFICATE ID!!");
 									continue;
 								}
-								 p.client_ip = serverIP;
+								
 								synchronized (buffer) {
 									if (buffer.containsKey(destAddr)) {
 										buffer.get(destAddr).add(p);
@@ -119,10 +122,10 @@ class ClientHandler implements Runnable {
                 		}
             			try {
             				curPacket.cert_id = certIDStore.get(s.getInetAddress());
-            				System.out.printf("%d sent\n", curPacket.pkt_id);
             				oos.writeObject(curPacket);
+            				System.out.printf("%d sent\n", curPacket.pkt_id);
             			} catch(IOException e) {
-            				e.printStackTrace();
+            				//e.printStackTrace();
             			}
                 		
                 	}

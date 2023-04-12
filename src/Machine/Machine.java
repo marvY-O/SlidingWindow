@@ -269,7 +269,8 @@ public class Machine {
                 	try {
 	                	
 	                	Packet p = buffer.get(j);
-	                	p.cert_id = certID;
+	                	System.out.printf("ID: %d, Client: %s, Destination: %s, certID: %s = ", p.pkt_id, p.client_ip, p.destination_ip, p.cert_id);
+						
 	                	oos.writeObject(p);
 	                	
 	                	int cnt = Math.round(p.pkt_id * 20 / pkt_total);
