@@ -128,7 +128,7 @@ public class Machine {
                         		System.out.printf("%d recieved\n", p.pkt_id);
                                 receiveBuffer.setElementAt(p,p.pkt_id - 1);
                                 
-                                if (receiveBuffer.size() % windowSize == 0 || p.pkt_id == totalPkts) {
+                                if (p.pkt_id % windowSize == 0 || p.pkt_id == totalPkts) {
                                 	Random random = new Random();
                                 	int rand = random.nextInt()%2;
                                 	if (rand == 0) {
@@ -263,8 +263,8 @@ public class Machine {
                     buffer.add(pkt);
                 }
                 int base = 0;
-                
-                for (int j=0; j<buffer.size(); j++) {
+                int j=0;
+                while (j<buffer.size()) {
                 	try {
 	                	
 	                	Packet p = buffer.get(j);
@@ -284,7 +284,8 @@ public class Machine {
 	                    cur += "|" + p.pkt_id + "/" + pkt_total + "\r";
 //	                    System.out.printf(cur);
 	                    System.out.printf("%d sent\n", p.pkt_id);
-	                    if ((j+1)%windowSize == 0) {
+	                    j++;
+	                    if ((j)%windowSize == 0) {
 	                    	try {
 		                    	System.out.printf("Waiting for ack");
 		                    	s.setSoTimeout(5000);
@@ -295,7 +296,7 @@ public class Machine {
 	                    	}
 	                		catch(SocketTimeoutException e) {
 	                			s.setSoTimeout(Integer.MAX_VALUE);
-	                			System.out.printf("Resending previous window\n");
+	                			System.out.println("Resending previous window\n");
 	                			j = base;
 	                		}
 	                    	finally {
