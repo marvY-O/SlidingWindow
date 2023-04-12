@@ -1,3 +1,4 @@
+
 package Machine;
 import java.io.*;
 import java.util.*;
@@ -101,7 +102,7 @@ public class Machine {
                 totalPkts = Integer.parseInt(firstReply.msg_name);
                 byteLength = firstReply.pkt_no;
                 System.out.println("Ready to receive " + totalPkts + " from " + firstReply.client_ip);
-                
+                receiveBuffer.setSize(totalPkts);
 
                 while (true) {
                     try {
@@ -124,9 +125,8 @@ public class Machine {
                                     }
                                 }
                                 cur += "|" + p.pkt_id + "/" + totalPkts + "\r";
-//                                System.out.printf(cur);
                         		System.out.printf("%d recieved\n", p.pkt_id);
-                                receiveBuffer.add(p);
+                                receiveBuffer.setElementAt(p,p.pkt_id - 1);
                                 
                                 if (receiveBuffer.size() % windowSize == 0 || p.pkt_id == totalPkts) {
                                 	Random random = new Random();
@@ -143,12 +143,6 @@ public class Machine {
                                 	}
                                 	else {
                                 		System.out.println("Ack not sent, waiting for prev window again.");
-                                		for (int i=receiveBuffer.size()-1; i>=0; i--) {
-                                			if (receiveBuffer.get(i).pkt_id % windowSize != 0) {
-                                				receiveBuffer.remove(i);
-                                			}
-                                			else break;
-                                		}
                                 	}
                                 }
 
@@ -156,6 +150,7 @@ public class Machine {
                                     System.out.printf("Received %d packets from %s\n", totalPkts, p.client_ip);
                                     break;
                                 }
+                                
                             }
                         }
 
@@ -296,7 +291,7 @@ public class Machine {
 	                    		System.out.println("\nAck Recieved!");
 	                    		
 	                    	}
-	                		catch(SocketException e) {
+	                		catch(SocketTimeoutException e) {
 	                			s.setSoTimeout(Integer.MAX_VALUE);
 	                			System.out.printf("Resending previous window\n");
 	                			j -= windowSize;
