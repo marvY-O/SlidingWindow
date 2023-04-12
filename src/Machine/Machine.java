@@ -113,7 +113,7 @@ public class Machine {
                                 return;
                             }
                             else {
-                                int cnt = Math.round(p.pkt_id * 20 / totalPkts);
+                                int cnt = Math.round((p.pkt_id-received) * 20 / windowSize);
                                 String cur = "|";
                                 for (int i = 0; i < 20; i++) {
                                     if (i < cnt) {
@@ -124,8 +124,8 @@ public class Machine {
                                         cur += " ";
                                     }
                                 }
-                                cur += "|" + p.pkt_id + "/" + totalPkts + "\r";
-//                        		System.out.printf("%d recieved\n", p.pkt_id);
+                                cur += "|" + (p.pkt_id-received) + "/" + windowSize + "\r";
+                        		System.out.printf(cur);
                                 receiveBuffer.setElementAt(p,p.pkt_id - 1);
                                 
                                 if (p.pkt_id % windowSize == 0 || p.pkt_id == totalPkts) {
@@ -139,7 +139,7 @@ public class Machine {
 	                                	ack.destination_ip = destIP;
 	                                    ack.client_ip = clientIP;
 	                                	oos.writeObject(ack);
-	                                	System.out.printf("Recieved %d packets\n", received+windowSize);
+	                                	System.out.printf("\nRecieved %d packets\n", received+windowSize);
 	                                	System.out.println("Ack sent!");
 	                                	received += windowSize;
                                 	}
@@ -274,7 +274,7 @@ public class Machine {
 //						
 	                	oos.writeObject(p);
 	                	
-	                	int cnt = Math.round(p.pkt_id * 20 / pkt_total);
+	                	int cnt = Math.round((p.pkt_id-base) * 20 / windowSize);
 	                    String cur = "|";
 	                    for (int i = 0; i < 20; i++) {
 	                        if (i < cnt) {
@@ -285,13 +285,13 @@ public class Machine {
 	                            cur += " ";
 	                        }
 	                    }
-	                    cur += "|" + p.pkt_id + "/" + pkt_total + "\r";
-//	                    System.out.printf(cur);
+	                    cur += "|" + (p.pkt_id-base)  + "/" + windowSize + "\r";
+	                    System.out.printf(cur);
 //	                    System.out.printf("%d sent\n", p.pkt_id);
 	                    j++;
 	                    if ((j)%windowSize == 0) {
 	                    	try {
-		                    	System.out.printf("Waiting for ack..\n");
+		                    	System.out.printf("\nWaiting for ack..\n");
 		                    	s.setSoTimeout(5000);
 	                    		Packet ack = (Packet) ois.readObject();
 	                    		base = ack.pkt_id;
